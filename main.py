@@ -1,5 +1,6 @@
 import serial
 import threading
+import time
 
 import serial.tools.list_ports
 
@@ -25,18 +26,18 @@ class SerialGroup():
     def broadcast(self, data):
         for e in self.esp:
             e["esp"].write(bytes(data, 'utf-8'))
-            print(data, flush=True)
+            print(data)
 
     #launch on sepparate thread to monitor serial connection
     def monitor(self, espNode, index):
-        print("started monitor", flush=True)
+        print("started monitor")
         text = ""
         while True:
             try:
                 if (espNode.inWaiting() > 0):
                     text += espNode.readline().decode("utf=8")
                 elif (text != ""):
-                    print("\n"+espNode.port + ": " + text,  flush=True)
+                    print("\n"+espNode.port + ": " + text)
                     text = ""
             except IOError:
                 print(espNode.port + " disconnected")
@@ -50,6 +51,12 @@ class SerialGroup():
 ms = SerialGroup()
 
 print("ready")
+
+commands = ("a1 x150", "a1 z200", "a1 x0", "a1 z0", "a1 x100 z200")
+
+for c in commands:
+    ms.broadcast(c)
+    time.sleep(0.25)
 
 while True:
     num = input("Enter input: ")
