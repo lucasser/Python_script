@@ -54,6 +54,7 @@ print("ready")
 
 commands = ("a1 x150", "a1 z200", "a1 x0", "a1 z0", "a1 x100 z200")
 
+
 for c in commands:
     ms.broadcast(c)
     time.sleep(0.25)
